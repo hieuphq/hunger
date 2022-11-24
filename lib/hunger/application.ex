@@ -9,7 +9,7 @@ defmodule Hunger.Application do
   def start(_type, _args) do
     children = [
       # Start the Ecto repository
-      Hunger.Repo,
+      # Hunger.Repo,
       # Start the Telemetry supervisor
       HungerWeb.Telemetry,
       # Start the PubSub system
@@ -19,6 +19,7 @@ defmodule Hunger.Application do
       # Start a worker by calling: Hunger.Worker.start_link(arg)
       # {Hunger.Worker, arg}
       {Registry, keys: :unique, name: HungerGameRegistry},
+      {Hunger.MatchStore, []},
       {Hunger.MatchManager, []},
       %{
         id: Hunger.MatchSupervisor,

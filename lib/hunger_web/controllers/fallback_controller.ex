@@ -22,10 +22,10 @@ defmodule HungerWeb.FallbackController do
     |> render(:"404")
   end
 
-  def call(conn, {:error, _detail}) do
+  def call(conn, {:error, detail}) do
     conn
     |> put_status(:bad_request)
     |> put_view(HungerWeb.ErrorView)
-    |> render(:"400")
+    |> render(:"400", message: detail)
   end
 end

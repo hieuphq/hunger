@@ -11,12 +11,14 @@ defmodule HungerWeb.GameController do
   end
 
   def create(conn, %{"game" => game_params}) do
-    game = Hungers.create_game(game_params)
-
-    conn
-    |> put_status(:created)
-    |> put_resp_header("location", Routes.game_path(conn, :show, game))
-    |> render("show.json", game: game)
+    with game = %{} <- Hungers.create_game(game_params) do
+      conn
+      |> put_status(:created)
+      |> put_resp_header("location", Routes.game_path(conn, :show, game))
+      |> render("show.json", game: game)
+    else
+      errs -> errs
+    end
   end
 
   def show(conn, %{"id" => game_id}) do

@@ -2,7 +2,7 @@ defmodule Hunger.Game.Round do
   alias Hunger.Game.Action
   alias Hunger.Constants
 
-  defstruct [:players, :next_states, :expired_at]
+  defstruct [:players, :next_states, :expired_at, :final_state]
 
   def new(players) do
     player_keys = Map.keys(players)
@@ -19,7 +19,8 @@ defmodule Hunger.Game.Round do
     %__MODULE__{
       players: players,
       next_states: init_states,
-      expired_at: expired_at
+      expired_at: expired_at,
+      final_state: init_states
     }
   end
 
