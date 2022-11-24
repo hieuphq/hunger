@@ -1,5 +1,4 @@
 defmodule Hunger.MatchStore do
-  alias Hunger.Game.Match
   use GenServer
 
   def start_link(_args) do
