@@ -33,7 +33,14 @@ defmodule Hunger.MatchWorker do
 
   def start_match(match_name) do
     pid = process_name(match_name)
-    GenServer.call(pid, :start)
+
+    case Registry.lookup(HungerGameRegistry, "hunger_#{match_name}") do
+      [] ->
+        {:error, :not_found}
+
+      _ ->
+        GenServer.call(pid, :start)
+    end
   end
 
   def submit(match_name, player_token, action) do
@@ -78,7 +85,6 @@ defmodule Hunger.MatchWorker do
 
   @impl true
   def handle_call(:get_status, _from, state) do
-    Match.print_map(state)
     {:reply, state, state}
   end
 

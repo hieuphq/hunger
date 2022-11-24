@@ -64,4 +64,10 @@ defmodule Hunger.Game.Cell do
   def cell_reward(%__MODULE__{type: @destination, metadata: marks}), do: marks
   def cell_reward(%__MODULE__{type: @item, metadata: marks}), do: marks
   def cell_reward(%__MODULE__{}), do: 0
+
+  def is_bomb?(%__MODULE__{type: @bomb}), do: true
+  def is_bomb?(%__MODULE__{}), do: false
+
+  def contain_item?(%__MODULE__{type: @item}), do: true
+  def contain_item?(%__MODULE__{}), do: false
 end

@@ -70,11 +70,12 @@ defmodule Hunger.MatchManager do
 
       match_id ->
         match_status = MatchWorker.get_match_status(match_name)
-        processing = Map.delete(processing, match_name)
+        updated_processing = Map.delete(processing, match_name)
         MatchStore.add_match(match_name, match_status)
+        Registry.unregister(HungerGameRegistry, "hunger_#{match_name}")
         GenServer.stop(match_id)
 
-        {:noreply, %State{state | processing: processing}}
+        {:noreply, %State{state | processing: updated_processing}}
     end
   end
 

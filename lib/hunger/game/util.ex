@@ -49,4 +49,23 @@ defmodule Hunger.Game.Util do
   def parse_action("left"), do: :left
   def parse_action("right"), do: :right
   def parse_action(_), do: :up
+
+  def determine_location({row, col}, {new_row, new_col}) when row == new_row and col == new_col,
+    do: :none
+
+  def determine_location({row, col}, _new = {new_row, new_col})
+      when row == new_row and col > new_col,
+      do: :left
+
+  def determine_location({row, col}, _new = {new_row, new_col})
+      when row == new_row and col < new_col,
+      do: :right
+
+  def determine_location({row, col}, _new = {new_row, new_col})
+      when row < new_row and col == new_col,
+      do: :down
+
+  def determine_location({row, col}, _new = {new_row, new_col})
+      when row > new_row and col == new_col,
+      do: :up
 end

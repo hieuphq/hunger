@@ -6,9 +6,10 @@ defmodule Hunger.Game.Match do
   alias Hunger.Game.Action
   alias Hunger.Game.Cell
   alias Hunger.Game.Util
+  alias Hunger.Game.StepSummary
   alias Hunger.Constants
 
-  defstruct [:id, :board, :rounds, :players, :status, :items, :booms]
+  defstruct [:id, :board, :rounds, :players, :status, :items, :booms, :history]
 
   @new :new
   @playing :playing
@@ -30,6 +31,7 @@ defmodule Hunger.Game.Match do
       players: players,
       status: @new,
       rounds: [],
+      history: [],
       booms: [],
       items: []
     }
@@ -60,20 +62,23 @@ defmodule Hunger.Game.Match do
 
   def start_match(m = %__MODULE__{}), do: m
 
-  def run(m = %__MODULE__{players: players, rounds: []}) do
+  def run(match = %__MODULE__{status: @done}), do: match
+
+  def run(m = %__MODULE__{players: players, rounds: [], history: []}) do
     r = Round.new(players)
-    %{m | rounds: [r]}
+
+    %__MODULE__{m | rounds: [r], history: [%{}]}
   end
 
   def run(
         match = %__MODULE__{
           players: players,
           board: board = %Board{},
+          status: @playing,
           rounds: [r = %Round{} | remains]
         }
       ) do
-    with {:end_match, false} <- {:end_match, should_end_match?(match)},
-         {:last_second, true} <- {:last_second, Round.is_last_second(r)} do
+    with {:last_second, true} <- {:last_second, Round.is_last_second(r)} do
       player_id_with_location =
         Round.last_players(r)
         |> Enum.map(fn playerid ->
@@ -95,27 +100,33 @@ defmodule Hunger.Game.Match do
       |> random_boom()
       |> renew_match()
     else
-      {:end_match, true} ->
-        %__MODULE__{match | status: @done}
-
       {:last_second, false} ->
         match
     end
   end
 
-  defp should_end_match?(%__MODULE__{rounds: rounds}) do
-    length(rounds) >= @max_round
-  end
-
   defp update_board(%__MODULE__{} = match, steps) do
     Enum.reduce(steps, match, fn {player_id, %Action{action: {:move, direction}}},
-                                 acc = %__MODULE__{players: players, board: board} ->
-      player = %Player{points: player_points} = Map.get(players, player_id)
+                                 acc = %__MODULE__{
+                                   players: players,
+                                   board: board
+                                 } ->
+      player =
+        %Player{points: player_points, location: curr_location} = Map.get(players, player_id)
 
       case Board.player_move(board, player, direction) do
         {:error, err} ->
           IO.inspect(err)
-          will_finish_game(acc, false)
+
+          step_summary =
+            StepSummary.new(
+              direction,
+              Util.determine_location(curr_location, curr_location),
+              []
+            )
+
+          update_history_summary(acc, player_id, step_summary)
+          |> will_finish_game(false)
 
         {:ok, %{board: updated_board, cells: cells, player_location: new_player_location}} ->
           rewards =
@@ -128,11 +139,20 @@ defmodule Hunger.Game.Match do
             |> Enum.map(fn c -> Cell.is_destination?(c) end)
             |> Enum.any?()
 
+          step_summary =
+            StepSummary.new(
+              direction,
+              Util.determine_location(curr_location, new_player_location),
+              cells
+            )
+
           new_points = player_points + rewards
           updated_player = %Player{player | location: new_player_location, points: new_points}
           updated_players = Map.put(players, player_id, updated_player)
 
-          acc = will_finish_game(acc, can_end_game?)
+          acc =
+            update_history_summary(acc, player_id, step_summary)
+            |> will_finish_game(can_end_game?)
 
           %__MODULE__{acc | board: updated_board, players: updated_players}
       end
@@ -144,6 +164,11 @@ defmodule Hunger.Game.Match do
   end
 
   def will_finish_game(m = %__MODULE__{}, _), do: m
+
+  def update_history_summary(m = %__MODULE__{history: [h | l]}, player_id, summary) do
+    new_h = Map.put(h, player_id, summary)
+    %__MODULE__{m | history: [new_h | l]}
+  end
 
   def commit_step(%__MODULE__{rounds: []}, _player_token, _direction) do
     {:error, "empty"}
@@ -179,8 +204,14 @@ defmodule Hunger.Game.Match do
     |> List.first()
   end
 
-  def renew_match(m = %__MODULE__{rounds: rounds, players: players, status: @playing}) do
-    %__MODULE__{m | rounds: [Round.new(players) | rounds]}
+  def renew_match(
+        m = %__MODULE__{rounds: rounds, players: players, history: history, status: @playing}
+      ) do
+    if length(rounds) < @max_round do
+      %__MODULE__{m | rounds: [Round.new(players) | rounds], history: [%{} | history]}
+    else
+      %__MODULE__{m | status: @done}
+    end
   end
 
   def renew_match(m = %__MODULE__{}), do: m

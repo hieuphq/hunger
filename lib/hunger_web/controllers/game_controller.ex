@@ -35,7 +35,14 @@ defmodule HungerWeb.GameController do
 
   def start(conn, %{"game_id" => id}) do
     game = Hungers.start_game(id)
-    render(conn, "show.json", game: game)
+
+    case game do
+      %{id: _} ->
+        render(conn, "show.json", game: game)
+
+      errs ->
+        errs
+    end
   end
 
   # def update(conn, %{"id" => id, "game" => game_params}) do
