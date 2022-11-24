@@ -43,4 +43,10 @@ defmodule Hunger.Game.Util do
   def next_move({row, col}, :left), do: {row, col - 1}
   def next_move({row, col}, :right), do: {row, col + 1}
   def next_move({row, col}, _), do: {row, col}
+
+  def parse_action("up"), do: :up
+  def parse_action("down"), do: :down
+  def parse_action("left"), do: :left
+  def parse_action("right"), do: :right
+  def parse_action(_), do: :up
 end

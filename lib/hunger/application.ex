@@ -19,10 +19,7 @@ defmodule Hunger.Application do
       # Start a worker by calling: Hunger.Worker.start_link(arg)
       # {Hunger.Worker, arg}
       {Registry, keys: :unique, name: HungerGameRegistry},
-      %{
-        id: Hunger.MatchManager,
-        start: {Hunger.MatchManager, :start_link, [[]]}
-      },
+      {Hunger.MatchManager, []},
       %{
         id: Hunger.MatchSupervisor,
         start: {Hunger.MatchSupervisor, :start_link, [[]]}

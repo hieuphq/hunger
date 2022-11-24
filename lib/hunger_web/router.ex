@@ -7,6 +7,12 @@ defmodule HungerWeb.Router do
 
   scope "/api", HungerWeb do
     pipe_through :api
+
+    resources "/game", GameController, only: [:create, :index, :show] do
+      post "/start", GameController, :start
+      resources "/player", PlayerController, only: [:create]
+      resources "/round", RoundController, only: [:create]
+    end
   end
 
   # Enables LiveDashboard only for development

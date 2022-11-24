@@ -1,4 +1,5 @@
 defmodule Hunger.MatchManager do
+  alias Hunger.Game.Util
   alias Hunger.MatchWorker
   alias Hunger.MatchSupervisor
 
@@ -35,7 +36,7 @@ defmodule Hunger.MatchManager do
     MatchWorker.join_match(match_name)
   end
 
-  def run_match(match_name) do
+  def start_match(match_name) do
     MatchWorker.start_match(match_name)
   end
 
@@ -49,6 +50,10 @@ defmodule Hunger.MatchManager do
 
   def done_match(match_name) do
     GenServer.cast(__MODULE__, {:done, match_name})
+  end
+
+  def submit_round(match_name, player_token, action) do
+    MatchWorker.submit(match_name, player_token, Util.parse_action(action))
   end
 
   @impl true
@@ -77,6 +82,8 @@ defmodule Hunger.MatchManager do
   @impl true
   def handle_call(:list, _from, state = %State{processing: processing}) do
     names = Map.keys(processing)
-    {:reply, names, state}
+
+    list = Enum.map(names, fn n -> match_status(n) end)
+    {:reply, list, state}
   end
 end

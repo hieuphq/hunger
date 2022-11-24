@@ -8,9 +8,9 @@ defmodule Hunger.Game.Match do
   alias Hunger.Game.Util
   alias Hunger.Constants
 
-  defstruct [:name, :board, :rounds, :players, :status, :items, :booms]
+  defstruct [:id, :board, :rounds, :players, :status, :items, :booms]
 
-  @init :init
+  @new :new
   @playing :playing
   @done :done
 
@@ -25,10 +25,10 @@ defmodule Hunger.Game.Match do
     }
 
     %__MODULE__{
-      name: name,
+      id: name,
       board: Board.new(players, size),
       players: players,
-      status: @init,
+      status: @new,
       rounds: [],
       booms: [],
       items: []
@@ -54,7 +54,7 @@ defmodule Hunger.Game.Match do
     end
   end
 
-  def start_match(m = %__MODULE__{status: @init}) do
+  def start_match(m = %__MODULE__{status: @new}) do
     %__MODULE__{m | status: @playing}
   end
 
@@ -72,12 +72,7 @@ defmodule Hunger.Game.Match do
           rounds: [r = %Round{} | remains]
         }
       ) do
-    # IO.inspect("##################################")
-    # IO.inspect(match.board)
-    # IO.inspect(r)
-    # IO.inspect("##################################")
-
-    with {:end_match, false} <- {:end_match, should_end_match?(match)} |> IO.inspect(),
+    with {:end_match, false} <- {:end_match, should_end_match?(match)},
          {:last_second, true} <- {:last_second, Round.is_last_second(r)} do
       player_id_with_location =
         Round.last_players(r)
@@ -150,23 +145,30 @@ defmodule Hunger.Game.Match do
 
   def will_finish_game(m = %__MODULE__{}, _), do: m
 
+  def commit_step(%__MODULE__{rounds: []}, _player_token, _direction) do
+    {:error, "empty"}
+  end
+
   def commit_step(m = %__MODULE__{rounds: [r = %Round{} | remains]}, player_token, direction) do
     case Round.is_last_second(r) do
       false ->
         get_user_by_token(m, player_token)
         |> case do
           nil ->
-            m
+            {:error, "user token invalid"}
 
           {player_id, _} ->
-            updated_round = Round.submit(r, player_id, {:move, direction})
+            updated_round =
+              %Round{next_states: next_states} = Round.submit(r, player_id, {:move, direction})
 
             latest_rounds = [updated_round | remains]
-            %__MODULE__{m | rounds: latest_rounds}
+
+            action = Map.get(next_states, player_id)
+            {:ok, action, %__MODULE__{m | rounds: latest_rounds}}
         end
 
       true ->
-        m
+        {:error, "round is expired"}
     end
   end
 

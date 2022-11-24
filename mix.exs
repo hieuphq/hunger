@@ -44,7 +44,8 @@ defmodule Hunger.MixProject do
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:hashids, "~> 2.0"}
+      {:hashids, "~> 2.0"},
+      {:nanoid, "~> 2.0.5"}
     ]
   end
 

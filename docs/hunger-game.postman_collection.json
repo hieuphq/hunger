@@ -1,0 +1,181 @@
+{
+	"info": {
+		"_postman_id": "72e35905-eae7-40d7-ad15-05c9e57bdf4d",
+		"name": "hunger-game",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "new-game",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"game\": \"b\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/api/game",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"api",
+						"game"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get-game-detail",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/api/game/b",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"api",
+						"game",
+						"b"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "start-game",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/api/game/b/start",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"api",
+						"game",
+						"b",
+						"start"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "join-game",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/api/game/b/player",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"api",
+						"game",
+						"b",
+						"player"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "submit-step",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"token\": \"ьІКРРпЛ\",\n    \"action\": \"down\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASE_URL}}/api/game/b/round",
+					"host": [
+						"{{BASE_URL}}"
+					],
+					"path": [
+						"api",
+						"game",
+						"b",
+						"round"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "BASE_URL",
+			"value": "http://localhost:4000",
+			"type": "default"
+		}
+	]
+}

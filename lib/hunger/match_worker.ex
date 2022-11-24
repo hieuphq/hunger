@@ -15,8 +15,15 @@ defmodule Hunger.MatchWorker do
     do: {:via, Registry, {HungerGameRegistry, "hunger_#{match_name}"}}
 
   def get_match_status(match_name) do
-    pid = process_name(match_name)
-    GenServer.call(pid, :get_status)
+    match_id = process_name(match_name)
+
+    case Registry.lookup(HungerGameRegistry, "hunger_#{match_name}") do
+      [] ->
+        {:error, :not_found}
+
+      _ ->
+        GenServer.call(match_id, :get_status)
+    end
   end
 
   def join_match(match_name) do
@@ -27,6 +34,11 @@ defmodule Hunger.MatchWorker do
   def start_match(match_name) do
     pid = process_name(match_name)
     GenServer.call(pid, :start)
+  end
+
+  def submit(match_name, player_token, action) do
+    pid = process_name(match_name)
+    GenServer.call(pid, {:submit, player_token, action})
   end
 
   # Server (callbacks)
@@ -49,9 +61,9 @@ defmodule Hunger.MatchWorker do
       with {:ok, detail, updated_match} <- Match.join(state) do
         {updated_match, detail}
       else
-        {:error, err} ->
+        errs = {:error, err} ->
           IO.inspect(err)
-          {state, nil}
+          {state, errs}
       end
 
     {:reply, response, new_state}
@@ -71,17 +83,19 @@ defmodule Hunger.MatchWorker do
   end
 
   @impl true
-  def handle_cast(:run, state) do
-    updated_state = Match.run(state)
-    Match.print_map(updated_state)
-    {:noreply, updated_state}
+  def handle_call({:submit, token, direction}, _from, state) do
+    with {:ok, action, updated_state} <- Match.commit_step(state, token, direction) do
+      {:reply, action, updated_state}
+    else
+      errs = {:error, _err} ->
+        {:reply, errs, state}
+    end
   end
 
   @impl true
-  def handle_cast({:submit, token, direction}, state) do
-    updated_state = Match.commit_step(state, token, direction)
-    updated_state.rounds |> List.first() |> IO.inspect()
-
+  def handle_cast(:run, state) do
+    updated_state = Match.run(state)
+    Match.print_map(updated_state)
     {:noreply, updated_state}
   end
 
@@ -92,8 +106,8 @@ defmodule Hunger.MatchWorker do
     {:noreply, state}
   end
 
-  def handle_info(:loop, state = %Match{name: name, status: :done}) do
-    MatchManager.done_match(name)
+  def handle_info(:loop, state = %Match{id: game_id, status: :done}) do
+    MatchManager.done_match(game_id)
     {:noreply, state}
   end
 
