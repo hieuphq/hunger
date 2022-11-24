@@ -19,6 +19,8 @@ defmodule HungerWeb.GameView do
     %{
       id: game.id,
       status: game.status,
+      no_items: Map.values(game.items) |> length(),
+      no_bombs: Map.values(game.bombs) |> length(),
       round_expire_at: render_round_expire_at(game),
       players: render_many(Map.values(game.players), PlayerView, "player.json"),
       prev_round: render_prev_history(game),
@@ -52,7 +54,7 @@ defmodule HungerWeb.GameView do
     end)
   end
 
-  defp render_prev_history(%Match{history: history, status: :done}) do
+  defp render_prev_history(%Match{history: history, status: :completed}) do
     [first | _] = history
 
     Enum.into(first, %{}, fn {k, val} ->

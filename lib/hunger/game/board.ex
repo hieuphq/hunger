@@ -44,8 +44,8 @@ defmodule Hunger.Game.Board do
             " "
 
           # TRICKY: boom
-          # "*" ->
-          #   " "
+          "*" ->
+            " "
 
           v ->
             v

@@ -5,7 +5,6 @@ defmodule Hunger.Hungers do
   The Hungers context.
   """
 
-  alias Hunger.MatchWorker
   alias Hunger.MatchManager
 
   @doc """

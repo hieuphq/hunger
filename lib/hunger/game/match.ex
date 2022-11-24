@@ -9,11 +9,11 @@ defmodule Hunger.Game.Match do
   alias Hunger.Game.StepSummary
   alias Hunger.Constants
 
-  defstruct [:id, :board, :rounds, :players, :status, :items, :booms, :history]
+  defstruct [:id, :board, :rounds, :players, :status, :items, :bombs, :history]
 
   @new :new
   @playing :playing
-  @done :done
+  @done :completed
 
   @max_round Constants.max_rounds()
 
@@ -32,8 +32,8 @@ defmodule Hunger.Game.Match do
       status: @new,
       rounds: [],
       history: [],
-      booms: [],
-      items: []
+      bombs: %{},
+      items: %{}
     }
   end
 
@@ -152,6 +152,7 @@ defmodule Hunger.Game.Match do
 
           acc =
             update_history_summary(acc, player_id, step_summary)
+            |> update_items(new_player_location)
             |> will_finish_game(can_end_game?)
 
           %__MODULE__{acc | board: updated_board, players: updated_players}
@@ -168,6 +169,10 @@ defmodule Hunger.Game.Match do
   def update_history_summary(m = %__MODULE__{history: [h | l]}, player_id, summary) do
     new_h = Map.put(h, player_id, summary)
     %__MODULE__{m | history: [new_h | l]}
+  end
+
+  defp update_items(m = %__MODULE__{bombs: bombs, items: items}, new_loc) do
+    %__MODULE__{m | bombs: Map.delete(bombs, new_loc), items: Map.delete(items, new_loc)}
   end
 
   def commit_step(%__MODULE__{rounds: []}, _player_token, _direction) do
@@ -221,14 +226,14 @@ defmodule Hunger.Game.Match do
     item = Item.random_item(1, 4)
 
     updated_board = Board.set_item(board, loc, item)
-    new_items = [item | items]
+    new_items = Map.put(items, loc, item)
 
     %__MODULE__{m | items: new_items, board: updated_board}
   end
 
   def random_item(m = %__MODULE__{}), do: m
 
-  def random_boom(m = %__MODULE__{board: board, items: items, status: @playing}) do
+  def random_boom(m = %__MODULE__{board: board, bombs: bombs, status: @playing}) do
     has_boom? = Util.random_value_with_percent(%{true: 1, false: 4})
 
     case has_boom? do
@@ -237,9 +242,9 @@ defmodule Hunger.Game.Match do
         item = "*"
 
         updated_board = Board.set_item(board, loc, item)
-        new_items = [item | items]
+        new_bombs = Map.put(bombs, loc, item)
 
-        %__MODULE__{m | items: new_items, board: updated_board}
+        %__MODULE__{m | bombs: new_bombs, board: updated_board}
 
       false ->
         m
