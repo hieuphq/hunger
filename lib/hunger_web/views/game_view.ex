@@ -24,7 +24,8 @@ defmodule HungerWeb.GameView do
       round_expire_at: render_round_expire_at(game),
       players: render_many(Map.values(game.players), PlayerView, "player.json"),
       prev_round: render_prev_history(game),
-      map: Board.print_matrix(game.board)
+      map: Board.print_matrix(game.board),
+      history: render_history(game)
     }
   end
 
@@ -49,7 +50,7 @@ defmodule HungerWeb.GameView do
          action_request: val.action_request,
          action_result: val.action_result,
          item: render_item(val.item),
-         got_boom: val.got_boom
+         got_bomb: val.got_bomb
        }}
     end)
   end
@@ -64,8 +65,42 @@ defmodule HungerWeb.GameView do
          action_request: val.action_request,
          action_result: val.action_result,
          item: render_item(val.item),
-         got_boom: val.got_boom
+         got_bomb: val.got_bomb
        }}
+    end)
+  end
+
+  defp render_history(%Match{history: []}), do: []
+
+  defp render_history(%Match{history: history, status: :playing}) do
+    [_first | remains] = history
+
+    Enum.map(remains, fn h ->
+      Enum.into(h, %{}, fn {k, val} ->
+        {k,
+         %{
+           action: val.action,
+           action_request: val.action_request,
+           action_result: val.action_result,
+           item: render_item(val.item),
+           got_bomb: val.got_bomb
+         }}
+      end)
+    end)
+  end
+
+  defp render_history(%Match{history: history, status: :completed}) do
+    Enum.map(history, fn h ->
+      Enum.into(h, %{}, fn {k, val} ->
+        {k,
+         %{
+           action: val.action,
+           action_request: val.action_request,
+           action_result: val.action_result,
+           item: render_item(val.item),
+           got_bomb: val.got_bomb
+         }}
+      end)
     end)
   end
 

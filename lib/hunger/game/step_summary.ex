@@ -1,7 +1,7 @@
 defmodule Hunger.Game.StepSummary do
   alias Hunger.Game.Cell
 
-  defstruct [:action, :action_request, :action_result, :item, :got_boom]
+  defstruct [:action, :action_request, :action_result, :item, :got_bomb]
 
   def new(action_request, action_result, cells) do
     got_bomb? =
@@ -14,7 +14,7 @@ defmodule Hunger.Game.StepSummary do
       action_request: action_request,
       action_result: action_result,
       item: parse_item(cells),
-      got_boom: got_bomb?
+      got_bomb: got_bomb?
     }
   end
 

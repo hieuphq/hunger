@@ -2,7 +2,7 @@ defmodule Hunger.Game.Util do
   alias Hunger.Constants
 
   @random_seeds Constants.random_seed()
-  @random_bomb_seeds Constants.random_boom_seed()
+  @random_bomb_seeds Constants.random_bomb_seed()
 
   def gererate_alphabet(num) do
     alphabet = ~w(a b c d e f g h i j k l m n o p q r s t u v w x y z)

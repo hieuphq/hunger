@@ -4,11 +4,10 @@ defmodule Hunger.Game.Board do
   alias Hunger.Game.Cell
   alias Hunger.Constants
 
-  defstruct [:rows, :cols, :map, :boom_map]
+  defstruct [:rows, :cols, :map]
 
   def new(players, size \\ 12) do
     matrix = init_matrix(size, size)
-    boom_map = matrix
 
     matrix =
       Enum.reduce(players, matrix, fn {player_id, %Player{location: loc}}, acc ->
@@ -21,8 +20,7 @@ defmodule Hunger.Game.Board do
     %__MODULE__{
       rows: size,
       cols: size,
-      map: matrix,
-      boom_map: boom_map
+      map: matrix
     }
   end
 
@@ -43,7 +41,7 @@ defmodule Hunger.Game.Board do
           nil ->
             " "
 
-          # TRICKY: boom
+          # TRICKY: bomb
           "*" ->
             " "
 

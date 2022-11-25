@@ -71,7 +71,7 @@ defmodule Hunger.MatchWorker do
 
   @impl true
   def handle_continue(:loop, state) do
-    Process.send_after(self(), :loop, Constants.round_limit_seconds() * 1000)
+    Process.send(self(), :loop, [])
 
     {:noreply, state}
   end
@@ -121,8 +121,8 @@ defmodule Hunger.MatchWorker do
 
   @impl true
   def handle_info(:loop, state = %{status: :playing}) do
-    Process.send_after(self(), :loop, Constants.round_limit_seconds() * 1000)
     GenServer.cast(self(), :run)
+    Process.send_after(self(), :loop, Constants.actually_round_seconds() * 1000)
     {:noreply, state}
   end
 

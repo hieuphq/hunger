@@ -97,7 +97,7 @@ defmodule Hunger.Game.Match do
       %__MODULE__{match | rounds: latest_rounds}
       |> update_board(Round.get_player_actions(round_updated))
       |> random_item()
-      |> random_boom()
+      |> random_bomb()
       |> renew_match()
     else
       {:last_second, false} ->
@@ -233,10 +233,10 @@ defmodule Hunger.Game.Match do
 
   def random_item(m = %__MODULE__{}), do: m
 
-  def random_boom(m = %__MODULE__{board: board, bombs: bombs, status: @playing}) do
-    has_boom? = Util.random_has_bomb?()
+  def random_bomb(m = %__MODULE__{board: board, bombs: bombs, status: @playing}) do
+    has_bomb? = Util.random_has_bomb?()
 
-    case has_boom? do
+    case has_bomb? do
       true ->
         loc = Board.random_loc(board)
         item = "*"
@@ -251,7 +251,7 @@ defmodule Hunger.Game.Match do
     end
   end
 
-  def random_boom(m = %__MODULE__{}), do: m
+  def random_bomb(m = %__MODULE__{}), do: m
 
   def print_map(%__MODULE__{board: board}) do
     Board.print_matrix(board)

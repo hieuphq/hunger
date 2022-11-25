@@ -2,7 +2,7 @@ defmodule Hunger.Game.Round do
   alias Hunger.Game.Action
   alias Hunger.Constants
 
-  defstruct [:players, :next_states, :expired_at]
+  defstruct [:players, :next_states, :expired_at, :time_round_limit, :actually_expired_at]
 
   def new(players) do
     player_keys = Map.keys(players)
@@ -16,10 +16,16 @@ defmodule Hunger.Game.Round do
       DateTime.utc_now()
       |> DateTime.add(Constants.round_limit_seconds(), :second)
 
+    actually_expired_at =
+      DateTime.utc_now()
+      |> DateTime.add(Constants.actually_round_seconds(), :second)
+
     %__MODULE__{
       players: players,
       next_states: init_states,
-      expired_at: expired_at
+      expired_at: expired_at,
+      actually_expired_at: actually_expired_at,
+      time_round_limit: Constants.round_limit_seconds()
     }
   end
 
@@ -44,9 +50,9 @@ defmodule Hunger.Game.Round do
     end
   end
 
-  def is_last_second(%__MODULE__{expired_at: expired_at}) do
+  def is_last_second(%__MODULE__{actually_expired_at: actually_expired_at}) do
     DateTime.utc_now()
-    |> DateTime.compare(expired_at)
+    |> DateTime.compare(actually_expired_at)
     |> case do
       :gt -> true
       _ -> false
