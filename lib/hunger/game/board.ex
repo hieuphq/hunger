@@ -6,7 +6,7 @@ defmodule Hunger.Game.Board do
 
   defstruct [:rows, :cols, :map]
 
-  def new(players, size \\ 12) do
+  def new(players, flag_pos, size \\ 12) do
     matrix = init_matrix(size, size)
 
     matrix =
@@ -14,7 +14,6 @@ defmodule Hunger.Game.Board do
         %{acc | loc => player_id}
       end)
 
-    flag_pos = Util.random_middle(size)
     matrix = %{matrix | flag_pos => "X"}
 
     %__MODULE__{
@@ -43,6 +42,9 @@ defmodule Hunger.Game.Board do
 
           # TRICKY: bomb
           "*" ->
+            " "
+
+          "X" ->
             " "
 
           v ->

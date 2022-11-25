@@ -41,6 +41,11 @@ config :nanoid,
   size: 6,
   alphabet: "_-123456789abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ"
 
+# config :cors_plug,
+#   origin: "*",
+#   max_age: 86400,
+#   methods: ["GET", "POST", "PUT", "DELETE", "PATCH"]
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

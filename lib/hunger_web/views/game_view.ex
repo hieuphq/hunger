@@ -25,7 +25,8 @@ defmodule HungerWeb.GameView do
       players: render_many(Map.values(game.players), PlayerView, "player.json"),
       prev_round: render_prev_history(game),
       map: Board.print_matrix(game.board),
-      history: render_history(game)
+      history: render_history(game),
+      goal: render_goal(game.goal)
     }
   end
 
@@ -111,4 +112,16 @@ defmodule HungerWeb.GameView do
       type: type,
       value: val
     }
+
+  defp render_goal({row, col}) do
+    [
+      %{
+        player_id: nil,
+        location: %{
+          row: row,
+          col: col
+        }
+      }
+    ]
+  end
 end

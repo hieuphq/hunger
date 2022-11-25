@@ -9,7 +9,7 @@ defmodule Hunger.Game.Match do
   alias Hunger.Game.StepSummary
   alias Hunger.Constants
 
-  defstruct [:id, :board, :rounds, :players, :status, :items, :bombs, :history]
+  defstruct [:id, :board, :rounds, :players, :status, :items, :bombs, :history, :goal]
 
   @new :new
   @playing :playing
@@ -25,15 +25,18 @@ defmodule Hunger.Game.Match do
       "d" => Player.new("d", size, size)
     }
 
+    flag_pos = Util.random_middle(size)
+
     %__MODULE__{
       id: name,
-      board: Board.new(players, size),
+      board: Board.new(players, flag_pos, size),
       players: players,
       status: @new,
       rounds: [],
       history: [],
       bombs: %{},
-      items: %{}
+      items: %{},
+      goal: flag_pos
     }
   end
 
