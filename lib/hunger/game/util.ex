@@ -1,4 +1,9 @@
 defmodule Hunger.Game.Util do
+  alias Hunger.Constants
+
+  @random_seeds Constants.random_seed()
+  @random_bomb_seeds Constants.random_boom_seed()
+
   def gererate_alphabet(num) do
     alphabet = ~w(a b c d e f g h i j k l m n o p q r s t u v w x y z)
 
@@ -8,6 +13,19 @@ defmodule Hunger.Game.Util do
 
   def random(min, max) do
     min - 1 + :rand.uniform(max - min + 1)
+  end
+
+  def random_item() do
+    itm =
+      @random_seeds
+      |> Enum.random()
+
+    "#{itm}"
+  end
+
+  def random_has_bomb?() do
+    @random_bomb_seeds
+    |> Enum.random()
   end
 
   def random_value_with_percent(config) when is_map(config) do

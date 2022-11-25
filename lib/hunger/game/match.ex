@@ -223,7 +223,7 @@ defmodule Hunger.Game.Match do
 
   def random_item(m = %__MODULE__{board: board, items: items, status: @playing}) do
     loc = Board.random_loc(board)
-    item = Item.random_item(1, 4)
+    item = Item.random_item()
 
     updated_board = Board.set_item(board, loc, item)
     new_items = Map.put(items, loc, item)
@@ -234,7 +234,7 @@ defmodule Hunger.Game.Match do
   def random_item(m = %__MODULE__{}), do: m
 
   def random_boom(m = %__MODULE__{board: board, bombs: bombs, status: @playing}) do
-    has_boom? = Util.random_value_with_percent(%{true: 1, false: 4})
+    has_boom? = Util.random_has_bomb?()
 
     case has_boom? do
       true ->

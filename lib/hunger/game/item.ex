@@ -1,4 +1,10 @@
 defmodule Hunger.Game.Item do
+  alias Hunger.Game.Util
+
+  def random_item() do
+    Util.random_item()
+  end
+
   def random_item(min, max) do
     base =
       Enum.map(min..max, fn v ->
