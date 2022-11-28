@@ -16,6 +16,7 @@ defmodule Hunger.Game.Match do
   @done :completed
 
   @max_round Constants.max_rounds()
+  @end_game_reward Constants.destination_marks()
 
   def new(name, size \\ 12) do
     players = %{
@@ -25,11 +26,18 @@ defmodule Hunger.Game.Match do
       "d" => Player.new("d", size, size)
     }
 
-    flag_pos = Util.random_middle(size)
+    flag_pos = %{
+      "a" => Util.random_player_location(:bottom_right, size),
+      "b" => Util.random_player_location(:bottom_left, size),
+      "c" => Util.random_player_location(:top_left, size),
+      "d" => Util.random_player_location(:top_right, size)
+    }
+
+    Util.random_middle(size)
 
     %__MODULE__{
       id: name,
-      board: Board.new(players, flag_pos, size),
+      board: Board.new(players, size),
       players: players,
       status: @new,
       rounds: [],
@@ -108,7 +116,7 @@ defmodule Hunger.Game.Match do
     end
   end
 
-  defp update_board(%__MODULE__{} = match, steps) do
+  defp update_board(%__MODULE__{goal: goals} = match, steps) do
     Enum.reduce(steps, match, fn {player_id, %Action{action: {:move, direction}}},
                                  acc = %__MODULE__{
                                    players: players,
@@ -137,10 +145,9 @@ defmodule Hunger.Game.Match do
               acc + Cell.cell_reward(c)
             end)
 
-          can_end_game? =
-            cells
-            |> Enum.map(fn c -> Cell.is_destination?(c) end)
-            |> Enum.any?()
+          can_end_game? = can_endgame?(player_id, new_player_location, goals)
+
+          rewards = if can_end_game?, do: rewards + @end_game_reward, else: rewards
 
           step_summary =
             StepSummary.new(
@@ -161,6 +168,14 @@ defmodule Hunger.Game.Match do
           %__MODULE__{acc | board: updated_board, players: updated_players}
       end
     end)
+  end
+
+  defp can_endgame?(player_id, {curr_row, curr_col}, goals) do
+    Enum.filter(goals, fn {k, _} -> k == nil || k == player_id end)
+    |> Enum.map(fn {_k, {r, c}} ->
+      curr_row == r && curr_col == c
+    end)
+    |> Enum.any?()
   end
 
   def will_finish_game(m = %__MODULE__{status: @playing}, true) do

@@ -124,4 +124,16 @@ defmodule HungerWeb.GameView do
       }
     ]
   end
+
+  defp render_goal(goals) do
+    Enum.map(goals, fn {k, {row, col}} ->
+      %{
+        player_id: k,
+        location: %{
+          row: row,
+          col: col
+        }
+      }
+    end)
+  end
 end
