@@ -6,15 +6,13 @@ defmodule Hunger.Game.Board do
 
   defstruct [:rows, :cols, :map]
 
-  def new(players, flag_pos, size \\ 12) do
+  def new(players, size \\ 12) do
     matrix = init_matrix(size, size)
 
     matrix =
       Enum.reduce(players, matrix, fn {player_id, %Player{location: loc}}, acc ->
         %{acc | loc => player_id}
       end)
-
-    matrix = %{matrix | flag_pos => "X"}
 
     %__MODULE__{
       rows: size,
@@ -42,9 +40,6 @@ defmodule Hunger.Game.Board do
 
           # TRICKY: bomb
           "*" ->
-            " "
-
-          "X" ->
             " "
 
           v ->

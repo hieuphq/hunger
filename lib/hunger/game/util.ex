@@ -49,6 +49,61 @@ defmodule Hunger.Game.Util do
     {x, y}
   end
 
+  def random_player_location(:top_left, size) do
+    mid4 = div(size, 4)
+    col_start = 1
+    col_end = mid4
+    row_start = 1
+    row_end = mid4
+
+    x = random(row_start, row_end)
+    y = random(col_start, col_end)
+
+    {x, y}
+  end
+
+  def random_player_location(:top_right, size) do
+    mid = div(size, 2)
+    mid4 = div(size, 4)
+    col_start = mid + mid4
+    col_end = size - 1
+    row_start = 1
+    row_end = mid4
+
+    x = random(row_start, row_end)
+    y = random(col_start, col_end)
+
+    {x, y}
+  end
+
+  def random_player_location(:bottom_left, size) do
+    mid = div(size, 2)
+    mid4 = div(size, 4)
+    col_start = 1
+    col_end = mid4
+    row_start = mid + mid4
+    row_end = size - 1
+
+    x = random(row_start, row_end)
+    y = random(col_start, col_end)
+
+    {x, y}
+  end
+
+  def random_player_location(:bottom_right, size) do
+    mid = div(size, 2)
+    mid4 = div(size, 4)
+    col_start = mid + mid4
+    col_end = size - 1
+    row_start = mid + mid4
+    row_end = size - 1
+
+    x = random(row_start, row_end)
+    y = random(col_start, col_end)
+
+    {x, y}
+  end
+
   def random_location(rows, cols) do
     x = random(1, rows)
     y = random(1, cols)

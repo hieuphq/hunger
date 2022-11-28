@@ -5,7 +5,6 @@ defmodule Hunger.Game.Cell do
 
   @item "item"
   @empty "empty"
-  @destination "dest"
   @bomb "bomb"
   @player "player"
 
@@ -20,12 +19,6 @@ defmodule Hunger.Game.Cell do
 
   def parse_cell(val) do
     case val do
-      "X" ->
-        %__MODULE__{
-          type: @destination,
-          metadata: @dest_marks
-        }
-
       "*" ->
         %__MODULE__{
           type: @bomb,
@@ -56,12 +49,6 @@ defmodule Hunger.Game.Cell do
 
   def can_move?(_), do: :ok
 
-  def is_destination?(%__MODULE__{type: @destination}),
-    do: true
-
-  def is_destination?(_), do: false
-
-  def cell_reward(%__MODULE__{type: @destination, metadata: marks}), do: marks
   def cell_reward(%__MODULE__{type: @item, metadata: marks}), do: marks
   def cell_reward(%__MODULE__{}), do: 0
 
