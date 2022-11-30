@@ -256,15 +256,27 @@ defmodule Hunger.Game.Match do
 
     case has_bomb? do
       true ->
-        loc = Board.random_loc(board)
         item = "*"
+        num_of_bombs = Util.random(1, 2)
 
-        updated_board = Board.set_item(board, loc, item)
-        new_bombs = Map.put(bombs, loc, item)
+        bombs_loc =
+          Enum.map(1..num_of_bombs, fn _idx ->
+            Board.random_loc(board)
+          end)
+
+        updated_board =
+          Enum.reduce(bombs_loc, board, fn loc, acc ->
+            Board.set_item(acc, loc, item)
+          end)
+
+        new_bombs =
+          Enum.reduce(bombs_loc, bombs, fn loc, acc ->
+            Map.put(acc, loc, item)
+          end)
 
         %__MODULE__{m | bombs: new_bombs, board: updated_board}
 
-      false ->
+      _false ->
         m
     end
   end

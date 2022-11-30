@@ -23,10 +23,11 @@ defmodule Hunger.Game.Util do
     "#{itm}"
   end
 
-  def random_has_bomb?() do
-    @random_bomb_seeds
-    |> Enum.random()
-  end
+  def random_has_bomb?(), do: true
+  # def random_has_bomb?() do
+  #   @random_bomb_seeds
+  #   |> Enum.random()
+  # end
 
   def random_value_with_percent(config) when is_map(config) do
     Enum.map(config, fn {k, count} ->
