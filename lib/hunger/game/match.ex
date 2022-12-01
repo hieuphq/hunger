@@ -22,15 +22,15 @@ defmodule Hunger.Game.Match do
     players = %{
       "a" => Player.new("a", 1, 1),
       "b" => Player.new("b", 1, size),
-      "c" => Player.new("c", size, 1),
-      "d" => Player.new("d", size, size)
+      "c" => Player.new("c", size, size),
+      "d" => Player.new("d", size, 1)
     }
 
     flag_pos = %{
-      "a" => Util.random_player_location(:bottom_right, size),
-      "b" => Util.random_player_location(:bottom_left, size),
-      "c" => Util.random_player_location(:top_left, size),
-      "d" => Util.random_player_location(:top_right, size)
+      "a" => Util.set_player_location(:bottom_right, size),
+      "b" => Util.set_player_location(:bottom_left, size),
+      "c" => Util.set_player_location(:top_left, size),
+      "d" => Util.set_player_location(:top_right, size)
     }
 
     Util.random_middle(size)

@@ -50,6 +50,22 @@ defmodule Hunger.Game.Util do
     {x, y}
   end
 
+  def set_player_location(:top_left, _size) do
+    {2, 2}
+  end
+
+  def set_player_location(:top_right, size) do
+    {2, size - 1}
+  end
+
+  def set_player_location(:bottom_left, size) do
+    {size - 1, 2}
+  end
+
+  def set_player_location(:bottom_right, size) do
+    {size - 1, size - 1}
+  end
+
   def random_player_location(:top_left, size) do
     mid4 = div(size, 4)
     col_start = 1
