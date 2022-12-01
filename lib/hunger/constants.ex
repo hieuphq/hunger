@@ -1,9 +1,9 @@
 defmodule Hunger.Constants do
   def max_rounds(), do: 48
 
-  def destination_marks(), do: 8
+  def destination_marks(), do: 15
 
-  def round_limit_seconds(), do: 8
+  def round_limit_seconds(), do: 6
 
   def actually_round_seconds(), do: round_limit_seconds()
 
