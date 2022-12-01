@@ -3,9 +3,9 @@ defmodule Hunger.Constants do
 
   def destination_marks(), do: 8
 
-  def round_limit_seconds(), do: 5
+  def round_limit_seconds(), do: 8
 
-  def actually_round_seconds(), do: round_limit_seconds() + 1
+  def actually_round_seconds(), do: round_limit_seconds()
 
   def moves(), do: [:up, :down, :left, :right]
 

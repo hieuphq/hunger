@@ -256,8 +256,9 @@ defmodule Hunger.Game.Match do
 
     case has_bomb? do
       true ->
+        # Util.random(1, 2)
         item = "*"
-        num_of_bombs = Util.random(1, 2)
+        num_of_bombs = 1
 
         bombs_loc =
           Enum.map(1..num_of_bombs, fn _idx ->

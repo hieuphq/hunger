@@ -40,7 +40,7 @@ defmodule Hunger.Game.Board do
 
           # TRICKY: bomb
           "*" ->
-            " "
+            "*"
 
           v ->
             v
