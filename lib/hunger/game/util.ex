@@ -105,11 +105,20 @@ defmodule Hunger.Game.Util do
     {x, y}
   end
 
-  def random_location(rows, cols) do
-    x = random(1, rows)
-    y = random(1, cols)
+  def random_location(rows, _cols) do
+    seeds = make_random_set(1, rows)
+
+    x = Enum.random(seeds)
+    y = Enum.random(seeds)
 
     {x, y}
+  end
+
+  def make_random_set(min, max) do
+    mid = div(max, 2)
+    mid4 = div(max, 4)
+    rs = Enum.reduce(min..mid4, [], fn idx, acc -> [idx | acc] end)
+    Enum.reduce((mid + mid4)..max, rs, fn idx, acc -> [idx | acc] end)
   end
 
   def next_move({row, col}, :up), do: {row - 1, col}

@@ -9,6 +9,8 @@ defmodule Hunger.Constants do
 
   def moves(), do: [:up, :down, :left, :right]
 
-  def random_seed(), do: [2, 2, 2, 2, 2, 2, 2, 2] ++ [4, 4, 4, 4, 4, 4] ++ [8, 8] ++ [16]
+  def random_seed(),
+    do: [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2] ++ [4, 4, 4, 4, 4, 4, 4, 4] ++ [6] ++ [8]
+
   def random_bomb_seed(), do: [false, false, false] ++ [true]
 end
