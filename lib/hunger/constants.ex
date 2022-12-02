@@ -3,7 +3,7 @@ defmodule Hunger.Constants do
 
   def destination_marks(), do: 4
 
-  def round_limit_seconds(), do: 6
+  def round_limit_seconds(), do: 10
 
   def actually_round_seconds(), do: round_limit_seconds()
 
