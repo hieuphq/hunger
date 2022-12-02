@@ -11,6 +11,16 @@ defmodule Hunger.Game.Util do
     |> Enum.take(num)
   end
 
+  @cyrillic_alphabet "123456789abcdefghijklmnopqrstuvwxyz"
+  @coder Hashids.new(alphabet: @cyrillic_alphabet)
+  def generate_name() do
+    unix =
+      DateTime.utc_now()
+      |> DateTime.to_unix()
+
+    Hashids.encode(@coder, [unix])
+  end
+
   def random(min, max) do
     min - 1 + :rand.uniform(max - min + 1)
   end

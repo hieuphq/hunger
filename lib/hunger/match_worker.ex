@@ -26,7 +26,7 @@ defmodule Hunger.MatchWorker do
     end
   end
 
-  def join_match(match_name) do
+  def join_match(match_name, team_name) do
     match_id = process_name(match_name)
 
     case Registry.lookup(HungerGameRegistry, "hunger_#{match_name}") do
@@ -34,7 +34,7 @@ defmodule Hunger.MatchWorker do
         {:error, :not_found}
 
       _val ->
-        GenServer.call(match_id, :join)
+        GenServer.call(match_id, {:join, team_name})
     end
   end
 
@@ -77,9 +77,9 @@ defmodule Hunger.MatchWorker do
   end
 
   @impl true
-  def handle_call(:join, _from, state) do
+  def handle_call({:join, team_name}, _from, state) do
     {new_state, response} =
-      with {:ok, detail, updated_match} <- Match.join(state) do
+      with {:ok, detail, updated_match} <- Match.join(state, team_name) do
         {updated_match, detail}
       else
         errs = {:error, err} ->

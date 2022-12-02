@@ -5,6 +5,16 @@ defmodule HungerWeb.PlayerController do
 
   action_fallback HungerWeb.FallbackController
 
+  def create(conn, %{"game_id" => game_id, "name" => name}) do
+    with player = %{id: _} <- Hungers.join_game(game_id, name) do
+      conn
+      |> put_status(:created)
+      |> render("show.json", player: player)
+    else
+      errs -> errs
+    end
+  end
+
   def create(conn, %{"game_id" => game_id}) do
     with player = %{id: _} <- Hungers.join_game(game_id) do
       conn
