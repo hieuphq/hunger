@@ -27,10 +27,10 @@ defmodule Hunger.Game.Match do
     }
 
     flag_pos = %{
-      "a" => Util.random_player_location(:bottom_right, size),
-      "b" => Util.random_player_location(:bottom_left, size),
-      "c" => Util.random_player_location(:top_left, size),
-      "d" => Util.random_player_location(:top_right, size)
+      "a" => Util.set_player_location(:bottom_right, size),
+      "b" => Util.set_player_location(:bottom_left, size),
+      "c" => Util.set_player_location(:top_left, size),
+      "d" => Util.set_player_location(:top_right, size)
     }
 
     Util.random_middle(size)
@@ -48,7 +48,7 @@ defmodule Hunger.Game.Match do
     }
   end
 
-  def join(m = %__MODULE__{players: players}) do
+  def join(m = %__MODULE__{players: players}, team_name) do
     choosing_player =
       players
       |> Enum.filter(fn
@@ -61,7 +61,7 @@ defmodule Hunger.Game.Match do
       {:error, "match is full"}
     else
       {player_id, detail} = choosing_player
-      updated_player = Player.joined(detail)
+      updated_player = Player.joined(detail, team_name)
       new_players = Map.put(players, player_id, updated_player)
       {:ok, updated_player, %__MODULE__{m | players: new_players}}
     end

@@ -42,8 +42,8 @@ defmodule Hunger.MatchManager do
     end
   end
 
-  def join_match(match_name) do
-    MatchWorker.join_match(match_name)
+  def join_match(match_name, team_name) do
+    MatchWorker.join_match(match_name, team_name)
   end
 
   def start_match(match_name) do

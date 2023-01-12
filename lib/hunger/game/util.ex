@@ -11,6 +11,16 @@ defmodule Hunger.Game.Util do
     |> Enum.take(num)
   end
 
+  @cyrillic_alphabet "123456789abcdefghijklmnopqrstuvwxyz"
+  @coder Hashids.new(alphabet: @cyrillic_alphabet)
+  def generate_name() do
+    unix =
+      DateTime.utc_now()
+      |> DateTime.to_unix()
+
+    Hashids.encode(@coder, [unix])
+  end
+
   def random(min, max) do
     min - 1 + :rand.uniform(max - min + 1)
   end
@@ -48,6 +58,22 @@ defmodule Hunger.Game.Util do
     y = random(col_start, col_end)
 
     {x, y}
+  end
+
+  def set_player_location(:top_left, _size) do
+    {2, 2}
+  end
+
+  def set_player_location(:top_right, size) do
+    {2, size - 1}
+  end
+
+  def set_player_location(:bottom_left, size) do
+    {size - 1, 2}
+  end
+
+  def set_player_location(:bottom_right, size) do
+    {size - 1, size - 1}
   end
 
   def random_player_location(:top_left, size) do

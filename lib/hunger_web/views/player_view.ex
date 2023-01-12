@@ -16,7 +16,8 @@ defmodule HungerWeb.PlayerView do
       token: player.token,
       location: render_location(player.location),
       points: player.points,
-      status: player.status
+      status: player.status,
+      name: player.name
     }
   end
 

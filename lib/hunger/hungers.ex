@@ -5,6 +5,7 @@ defmodule Hunger.Hungers do
   The Hungers context.
   """
 
+  alias Hunger.Game.Util
   alias Hunger.MatchManager
 
   @doc """
@@ -61,8 +62,12 @@ defmodule Hunger.Hungers do
     MatchManager.new_match(name)
   end
 
+  def join_game(game, team_name) do
+    MatchManager.join_match(game, team_name)
+  end
+
   def join_game(game) do
-    MatchManager.join_match(game)
+    MatchManager.join_match(game, nil)
   end
 
   def submit(game, token, action) do
