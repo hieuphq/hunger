@@ -18,6 +18,15 @@ defmodule Hunger.MatchStore do
     GenServer.call(__MODULE__, {:get, match_name})
   end
 
+  def get_list() do
+    GenServer.call(__MODULE__, :list)
+  end
+
+  @impl true
+  def handle_call(:list, _from, state) do
+    {:reply, Map.values(state), state}
+  end
+
   @impl true
   def handle_call({:get, match_name}, _from, state) do
     case Map.has_key?(state, match_name) do

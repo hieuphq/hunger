@@ -8,11 +8,24 @@ defmodule HungerWeb.GameView do
   alias HungerWeb.PlayerView
 
   def render("index.json", %{game: game}) do
-    %{data: render_many(game, GameView, "game.json")}
+    %{data: render_many(game, GameView, "game-summary.json")}
   end
 
   def render("show.json", %{game: game}) do
     %{data: render_one(game, GameView, "game.json")}
+  end
+
+  def render("game-summary.json", %{game: game}) do
+    %{
+      id: game.id,
+      status: game.status,
+      no_items: Map.values(game.items) |> length(),
+      no_bombs: Map.values(game.bombs) |> length(),
+      round_expire_at: render_round_expire_at(game),
+      players: render_many(Map.values(game.players), PlayerView, "player.json"),
+      prev_round: render_prev_history(game),
+      goal: render_goal(game.goal)
+    }
   end
 
   def render("game.json", %{game: game}) do

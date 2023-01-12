@@ -5,6 +5,7 @@ defmodule Hunger.Hungers do
   The Hungers context.
   """
 
+  alias Hunger.MatchStore
   alias Hunger.Game.Util
   alias Hunger.MatchManager
 
@@ -18,7 +19,7 @@ defmodule Hunger.Hungers do
 
   """
   def list_game do
-    MatchManager.match_list()
+    MatchManager.match_list() ++ MatchStore.get_list()
   end
 
   @doc """
