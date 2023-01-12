@@ -33,8 +33,8 @@ defmodule HungerWeb.GameController do
     end
   end
 
-  def start(conn, %{"game_id" => id}) do
-    game = Hungers.start_game(id)
+  def start(conn, %{"game_id" => id, "token" => token}) do
+    game = Hungers.start_game(id, token)
 
     case game do
       %{id: _} ->
@@ -43,6 +43,10 @@ defmodule HungerWeb.GameController do
       errs ->
         errs
     end
+  end
+
+  def start(_conn, %{"game_id" => _id}) do
+    {:error, "missing token in body"}
   end
 
   # def update(conn, %{"id" => id, "game" => game_params}) do

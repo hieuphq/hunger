@@ -38,7 +38,7 @@ defmodule Hunger.MatchWorker do
     end
   end
 
-  def start_match(match_name) do
+  def start_match(match_name, token) do
     pid = process_name(match_name)
 
     case Registry.lookup(HungerGameRegistry, "hunger_#{match_name}") do
@@ -46,7 +46,7 @@ defmodule Hunger.MatchWorker do
         {:error, :not_found}
 
       _ ->
-        GenServer.call(pid, :start)
+        GenServer.call(pid, {:start, token})
     end
   end
 
@@ -91,10 +91,13 @@ defmodule Hunger.MatchWorker do
   end
 
   @impl true
-  def handle_call(:start, _from, state) do
-    new_state = Match.start_match(state)
-
-    {:reply, new_state, new_state, {:continue, :loop}}
+  def handle_call({:start, token}, _from, state) do
+    with {:ok, updated_state} <- Match.start_match(state, token) do
+      {:reply, updated_state, updated_state, {:continue, :loop}}
+    else
+      errs = {:error, _err} ->
+        {:reply, errs, state}
+    end
   end
 
   @impl true

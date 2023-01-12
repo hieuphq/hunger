@@ -67,11 +67,18 @@ defmodule Hunger.Game.Match do
     end
   end
 
-  def start_match(m = %__MODULE__{status: @new}) do
-    %__MODULE__{m | status: @playing}
+  def start_match(m = %__MODULE__{status: @new}, token) do
+    get_user_by_token(m, token)
+    |> case do
+      nil ->
+        {:error, "invalid user token"}
+
+      {_player_id, _} ->
+        {:ok, %__MODULE__{m | status: @playing}}
+    end
   end
 
-  def start_match(m = %__MODULE__{}), do: m
+  def start_match(%__MODULE__{}, _), do: {:error, "game was started"}
 
   def run(match = %__MODULE__{status: @done}), do: match
 

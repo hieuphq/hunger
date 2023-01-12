@@ -74,7 +74,7 @@ defmodule Hunger.Hungers do
     MatchManager.submit_round(game, token, action)
   end
 
-  def start_game(game) do
-    MatchManager.start_match(game)
+  def start_game(game, token) do
+    MatchManager.start_match(game, token)
   end
 end
