@@ -19,7 +19,8 @@ defmodule Hunger.Hungers do
 
   """
   def list_game do
-    MatchManager.match_list() ++ MatchStore.get_list()
+    # ++ MatchStore.get_list()
+    MatchManager.match_list()
   end
 
   @doc """
