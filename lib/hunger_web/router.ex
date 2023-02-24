@@ -13,6 +13,8 @@ defmodule HungerWeb.Router do
       resources "/player", PlayerController, only: [:create]
       resources "/round", RoundController, only: [:create]
     end
+
+    post "/match-making", MatchController, :init
   end
 
   # Enables LiveDashboard only for development
