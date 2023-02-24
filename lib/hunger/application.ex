@@ -24,7 +24,14 @@ defmodule Hunger.Application do
       %{
         id: Hunger.MatchSupervisor,
         start: {Hunger.MatchSupervisor, :start_link, [[]]}
-      }
+      },
+      {Hunger.Mm.GuestPool, []},
+      {Hunger.Mm.Lobby, []},
+      %{
+        id: Hunger.Mm.MatchMakerSupervisor,
+        start: {Hunger.Mm.MatchMakerSupervisor, :start_link, [[]]}
+      },
+      {Hunger.Mm.MatchMakerLeader, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
